@@ -1,0 +1,19 @@
+<section class="dawn-sheet dawn-catalog-content">
+<header class="dawn-library-heading"><h2>{{libraryTitle}}</h2><label>{{dawnLabel 'targetActor'}}<select data-target-actor><option value="">{{dawnLabel 'selectActorShort'}}</option>{{#each actors}}<option value="{{uuid}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label></header>
+<nav class="dawn-tabs">{{#each types}}<button type="button" data-action="type" data-type="{{id}}" class="{{#if active}}active{{/if}}">{{name}}</button>{{/each}}</nav>
+<input data-search type="search" value="{{query}}" aria-label="{{dawnLabel 'search'}}" placeholder="{{dawnLabel 'search'}}">
+{{#if query}}<button type="button" data-action="searchChat">{{dawnLabel 'librarySearchChat'}}</button>{{/if}}
+{{#if indexFailures}}<p class="dawn-muted">{{dawnLabel 'libraryPartial'}} {{#each indexFailures}}{{packLabel}} {{/each}}</p>{{/if}}
+{{#if isTechniques}}<div class="dawn-archetype-filter">{{#each archetypes}}<button type="button" data-action="archetype" data-archetype="{{id}}" aria-pressed="{{active}}">{{name}}</button>{{/each}}</div>{{#if canCreateTechnique}}<button type="button" data-action="createTechnique">{{dawnLabel 'createTechnique'}}</button>{{/if}}{{/if}}
+<div class="dawn-library-summary"><span>{{dawnEntryCount count}}</span>{{#if target}}<span>{{target}} · {{rankTotal}}{{#if startingBudget}} / 5{{/if}} {{dawnLabel 'techniqueLevels'}}</span>{{/if}}</div>
+{{#if target}}{{#unless canAdd}}<p class="dawn-muted">{{dawnLabel 'unlockToChange'}}</p>{{/unless}}{{/if}}
+{{#if isTechniques}}
+{{#each groups}}<section class="dawn-tech-group"><h3>{{name}}</h3>{{#each rows}}
+<details class="dawn-tech-card" draggable="true" data-uuid="{{uuid}}" data-document-type="Item">
+<summary><span>{{name}} <small>{{complexity}}★</small></span><span class="dawn-pips" aria-label="{{dawnLabel 'learnedLevel'}}">{{#each levels}}<button type="button" data-action="learn" data-id="{{../id}}" data-level="{{n}}" aria-label="{{dawnLabel 'learnLevel'}} {{n}} · {{../name}}" aria-pressed="{{chosen}}" {{#unless ../canAdd}}disabled{{/unless}}>{{n}}</button>{{else}}<button type="button" data-action="take" {{#unless canAdd}}disabled{{/unless}}>{{dawnLabel 'add'}}</button>{{/each}}</span></summary>
+<div class="dawn-tech-card-body"><p class="dawn-muted">{{tags}}</p><p class="dawn-flavor">{{{dawnRich description}}}</p>{{#each levels}}<section class="dawn-tech-level {{#if chosen}}learned{{/if}}"><h4><span>{{n}}</span> {{name}}</h4><p class="dawn-pre">{{{dawnRich text}}}</p></section>{{/each}}<div class="dawn-tech-footer"><span>{{#if packLabel}}{{packLabel}}{{/if}}{{#if source.pdfPage}} PDF {{source.pdfPage}}{{/if}}</span><button type="button" data-action="document" data-uuid="{{uuid}}">{{dawnLabel 'openItem'}}</button></div></div>
+</details>{{/each}}</section>{{/each}}
+{{else}}
+{{#each rows}}<details class="dawn-catalog-record" draggable="true" data-uuid="{{uuid}}" data-document-type="{{#if isNpc}}Actor{{else}}Item{{/if}}"><summary><span>{{name}}</span>{{#if isEffect}}<button type="button" data-action="applyEffect" data-id="{{id}}" {{#unless canAdd}}disabled{{/unless}}>{{dawnLabel 'applyEffect'}}</button>{{else}}<button type="button" data-action="take" data-id="{{id}}" {{#unless canAdd}}disabled{{/unless}}>{{#if owned}}{{dawnLabel 'owned'}}{{else}}{{#if isNpc}}{{dawnLabel 'create'}}{{else}}{{dawnLabel 'add'}}{{/if}}{{/if}}</button>{{/if}}</summary><div class="dawn-feature-body"><p class="dawn-pre">{{{dawnRich description}}}</p>{{#if isEffect}}<p class="dawn-muted">{{dawnLabel 'effectManualHint'}}</p>{{/if}}<button type="button" data-action="document" data-uuid="{{uuid}}">{{dawnLabel 'openItem'}}</button></div></details>{{/each}}
+{{/if}}
+</section>

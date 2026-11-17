@@ -1,0 +1,11 @@
+<section class="dawn-clock-list">
+  {{#if otherGM}}<p class="dawn-muted">{{dawnLabel 'clocksExecutor'}}</p>{{/if}}
+  {{#each clocks}}
+  <article class="dawn-clock-card"><div class="dawn-clock-heading"><strong>{{name}}</strong><span>{{value}} / {{total}}</span></div>
+    <div class="dawn-clock-segments" role="img" aria-label="{{value}} / {{total}}">{{#each segments}}<span class="dawn-clock-segment {{#if filled}}filled{{/if}}"></span>{{/each}}</div>
+    {{#if consequence}}<small>{{consequence}}</small>{{/if}}
+    {{#if ../gm}}<div class="dawn-clock-buttons"><button type="button" data-action="change" data-id="{{id}}" data-delta="-1" aria-label="{{dawnLabel 'clocksDecrease'}}">−</button><button type="button" data-action="change" data-id="{{id}}" data-delta="1" aria-label="{{dawnLabel 'clocksIncrease'}}">+</button><button type="button" data-action="remove" data-id="{{id}}">{{dawnLabel 'clocksRemove'}}</button></div>{{/if}}
+  </article>
+  {{else}}<p class="dawn-muted">{{dawnLabel 'clocksEmpty'}}</p>{{/each}}
+  {{#if gm}}<button type="button" data-action="add"><i class="fa-solid fa-plus"></i> {{dawnLabel 'clocksAdd'}}</button>{{/if}}
+</section>

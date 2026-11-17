@@ -1,0 +1,202 @@
+{
+  "id": "dawn",
+  "title": "DAWN — LionWing",
+  "description": "DAWN for Foundry VTT. Russian and English character, NPC and enemy sheets, XD6 and content library. Development version.",
+  "version": "0.2.1",
+  "url": "https://github.com/Noty-chan/dawn-foundry-vtt-public",
+  "manifest": "https://github.com/Noty-chan/dawn-foundry-vtt-public/releases/latest/download/system.json",
+  "download": "https://github.com/Noty-chan/dawn-foundry-vtt-public/releases/download/v0.2.1/dawn-0.2.1.zip",
+  "compatibility": {
+    "minimum": "13.351",
+    "verified": "13.351",
+    "maximum": "13"
+  },
+  "authors": [
+    {
+      "name": "DAWN Foundry project"
+    }
+  ],
+  "esmodules": [
+    "scripts/dawn.mjs"
+  ],
+  "styles": [
+    "styles/dawn.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "hero": {},
+      "npc": {},
+      "party": {},
+      "controller": {}
+    },
+    "Item": {
+      "skill": {},
+      "ability": {},
+      "bond": {},
+      "technique": {},
+      "boon": {},
+      "equipment": {},
+      "action": {},
+      "modifier": {},
+      "effect": {}
+    },
+    "ChatMessage": {
+      "dawnRequest": {}
+    }
+  },
+  "grid": {
+    "type": 1,
+    "distance": 1,
+    "diagonals": 3,
+    "units": "cells"
+  },
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "focus",
+  "packs": [
+    {
+      "name": "techniques-powerhouse",
+      "label": "DAWN · Силач / Powerhouse",
+      "type": "Item",
+      "path": "packs/techniques-powerhouse",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-vagabond",
+      "label": "DAWN · Бродяга / Vagabond",
+      "type": "Item",
+      "path": "packs/techniques-vagabond",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-bulwark",
+      "label": "DAWN · Оплот / Bulwark",
+      "type": "Item",
+      "path": "packs/techniques-bulwark",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-altruist",
+      "label": "DAWN · Альтруист / Altruist",
+      "type": "Item",
+      "path": "packs/techniques-altruist",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-disruptor",
+      "label": "DAWN · Подрывник / Disruptor",
+      "type": "Item",
+      "path": "packs/techniques-disruptor",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-ruiner",
+      "label": "DAWN · Разрушитель / Ruiner",
+      "type": "Item",
+      "path": "packs/techniques-ruiner",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "npc",
+      "label": "DAWN · Враги / Enemies",
+      "type": "Actor",
+      "path": "packs/npc",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "boon",
+      "label": "DAWN · Дары / Boons",
+      "type": "Item",
+      "path": "packs/boon",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "action",
+      "label": "DAWN · Действия / Actions",
+      "type": "Item",
+      "path": "packs/action",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "modifier",
+      "label": "DAWN · Модификаторы / Modifiers",
+      "type": "Item",
+      "path": "packs/modifier",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "effect",
+      "label": "DAWN · Эффекты / Effects",
+      "type": "Item",
+      "path": "packs/effect",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "bonds",
+      "label": "DAWN · Связи и их действия / Bonds",
+      "type": "Item",
+      "path": "packs/bonds",
+      "system": "dawn",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "socket": true
+}

@@ -1,0 +1,30 @@
+<section class="dawn-roll-workspace">
+{{#if pending}}
+<h3>{{dawnLabel 'rollRecoveryTitle'}}</h3>
+{{#if pending.result}}
+<p>{{dawnLabel 'rollRecoveryHint'}}</p>
+{{#unless pendingStored}}<p>{{dawnLabel 'rollRecoveryMemoryOnly'}}</p><button type="button" data-action="savePending">{{dawnLabel 'rollSavePending'}}</button>{{/unless}}
+<p>ID: {{pending.rollId}}</p>{{#if pendingShowDice}}<div class="dawn-dice">{{#each pending.result.dice}}<span class="dawn-die">{{face}}</span>{{/each}}</div>
+<p><strong>{{pending.result.hits}} {{dawnLabel 'hits'}}</strong> · {{pending.result.crits}} {{dawnLabel 'crits'}}</p>{{#if pending.result.outcome}}<p>{{dawnLabel pending.result.outcome}}</p>{{/if}}{{else}}<p>{{dawnLabel 'rollRecoveryBlind'}}</p>{{/if}}
+{{else}}<p>{{dawnLabel 'rollRecoveryGenerating'}}</p><p>ID: {{pending.rollId}}</p>{{/if}}
+<div class="dawn-buttons"><button type="button" data-action="checkPending">{{dawnLabel 'rollCheckChat'}}</button>{{#if canRepublish}}<button type="button" data-action="republish">{{dawnLabel 'rollRepublish'}}</button>{{/if}}<button type="button" data-action="discardPending">{{dawnLabel 'rollDiscard'}}</button></div>{{#if pending.result}}{{#if pendingStored}}{{#unless canRepublish}}<p class="dawn-muted">{{dawnLabel 'rollRepublishUnavailable'}}</p>{{/unless}}{{/if}}{{/if}}
+{{else}}
+{{#if contextLabel}}<p class="dawn-roll-context">{{contextLabel}}</p>{{/if}}
+{{#if finisher}}<p class="dawn-context-hint">{{dawnLabel 'finisherFocus'}}: {{finisher.focus}} · {{dawnLabel 'tension'}}: {{finisher.tension}}. {{dawnLabel 'finisherManualHint'}}</p>{{/if}}
+{{#if showTargets}}<div class="dawn-roll-target-selection"><strong>{{dawnLabel 'targets'}}</strong><button type="button" data-action="refreshTargets">{{dawnLabel 'refreshTargets'}}</button><p>{{#each targets}}{{#unless @first}}, {{/unless}}{{name}}{{else}}{{dawnLabel 'noTargets'}}{{/each}}</p><small class="dawn-muted">{{dawnLabel 'targetsHint'}}</small></div>{{/if}}
+{{#if npcManualPool}}<label>{{dawnLabel 'npcPool'}}<input type="number" data-roll-field="npcPool" value="{{npcPool}}" min="0" max="200" step="1" placeholder="{{dawnLabel 'npcPoolPlaceholder'}}"></label><p class="dawn-muted">{{#if npcPoolMissing}}{{dawnLabel 'npcPoolRequired'}}{{else}}{{dawnLabel 'npcPoolHint'}}{{/if}}</p>{{/if}}
+<div class="dawn-selected-sources">{{#each sources}}<div><span>{{name}}</span><strong>{{count}}d6</strong></div>{{else}}<p>{{dawnLabel 'noSources'}}</p>{{/each}}</div>
+{{#if allowQuick}}<div class="dawn-roll-kind"><button type="button" data-action="kind" data-kind="normal" aria-pressed="{{normal}}">XD6</button><button type="button" data-action="kind" data-kind="quick" aria-pressed="{{quick}}">Quick</button></div>{{/if}}
+{{#if assassinateAvailable}}<label class="dawn-check dawn-assassinate"><input type="checkbox" data-roll-field="assassinate" {{checked assassinate}}>{{dawnLabel 'assassinateChoice'}}</label><p class="dawn-muted">{{dawnLabel 'assassinateHint'}}</p>{{else}}{{#if assassinateStale}}<label class="dawn-check dawn-assassinate"><input type="checkbox" data-roll-field="assassinate" {{checked assassinate}}>{{dawnLabel 'assassinateUnavailable'}}</label>{{/if}}{{/if}}
+<div class="dawn-modifiers">
+<div class="dawn-modifier"><span>{{dawnLabel 'advantage'}}</span><div><button type="button" data-action="adjust" data-field="advantage" data-delta="-1" aria-label="{{dawnLabel 'lessAdvantage'}}">−</button><strong>{{advantage}}</strong><button type="button" data-action="adjust" data-field="advantage" data-delta="1" aria-label="{{dawnLabel 'moreAdvantage'}}">+</button></div></div>
+<div class="dawn-modifier"><span>{{dawnLabel 'disadvantage'}}</span><div><button type="button" data-action="adjust" data-field="disadvantage" data-delta="-1" aria-label="{{dawnLabel 'lessDisadvantage'}}">−</button><strong>{{disadvantage}}</strong><button type="button" data-action="adjust" data-field="disadvantage" data-delta="1" aria-label="{{dawnLabel 'moreDisadvantage'}}">+</button></div></div>
+</div>
+{{#if quick}}<p class="dawn-muted">{{dawnLabel 'quickSourceHint'}}</p>{{/if}}
+{{#if quickDisadvantage}}<label>{{dawnLabel 'quickAgreedAdjustment'}}<input type="number" data-roll-field="quickAdjustment" value="{{quickAdjustment}}" min="-200" max="200"></label><p class="dawn-muted">{{dawnLabel 'quickDisadvantageHint'}}</p>{{/if}}
+{{#unless quick}}<label>{{dawnLabel 'difficulty'}}<select data-roll-field="difficulty">{{selectOptions difficultyOptions selected=difficulty}}</select></label>
+{{#if fixed}}<div class="dawn-target"><select data-roll-field="comparison" aria-label="{{dawnLabel 'comparison'}}">{{selectOptions (dawnComparisons) selected=comparison}}</select><input type="number" data-roll-field="target" value="{{target}}" min="0" max="200" aria-label="{{dawnLabel 'targetHits'}}"></div>{{else}}{{#if tierDifficulty}}<p class="dawn-muted">{{dawnLabel 'tier'}} {{tier}}</p>{{/if}}{{/if}}
+{{/unless}}<details class="dawn-roll-advanced"><summary>{{dawnLabel 'rollSettings'}}</summary><label>{{dawnLabel 'successAt'}}<input type="number" data-roll-field="successAt" value="{{successAt}}" min="2" max="6"></label><label>{{dawnLabel 'criticalAt'}}<input type="number" data-roll-field="criticalAt" value="{{criticalAt}}" min="0" max="6"></label><label class="dawn-check"><input type="checkbox" data-roll-field="explode" {{checked explode}}>{{dawnLabel 'explode'}}</label></details>
+<button class="dawn-primary dawn-submit-roll" type="button" data-action="roll" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-dice-d6" aria-hidden="true"></i> {{dawnLabel 'roll'}} · {{pool}}d6</button>
+{{/if}}
+</section>

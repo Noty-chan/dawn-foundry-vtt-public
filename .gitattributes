@@ -1,0 +1,2 @@
+# Foundry compendiums are LevelDB databases; keep every byte, including CURRENT.
+system/packs/** -text
