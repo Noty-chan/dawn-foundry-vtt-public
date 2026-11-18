@@ -650,6 +650,8 @@
     "speedEffectConflict": "Hastened and Slowed are both active. Base Speed is shown; decide the result and order at the table.",
     "rollPublishUncertain": "Could not confirm publication of the roll.",
     "rollNotStarted": "The roll did not start.",
+    "attackTargetMismatch": "Select a hero listed as a target on the roll card.",
+    "rollInvalidNumbers": "Check the numbers in the roll settings. The pool can contain at most 200 dice.",
     "rollRecoveryTitle": "Saved roll result",
     "rollRecoveryHint": "Publication may have succeeded. Check the chat; no new dice are rolled while this result is pending.",
     "rollRecoveryMemoryOnly": "The result remains only in this tab’s memory. Record it before reloading or closing the tab.",

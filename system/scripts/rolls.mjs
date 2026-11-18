@@ -54,6 +54,7 @@ export function heroRollSourcesUnchanged(actor,selection,sources){
 }
 export function rollSelection(actor,context="free"){const key=`${actor.uuid}:${context}`;if(!game.dawn.rollSelections.has(key))game.dawn.rollSelections.set(key,{attribute:"body",context});return game.dawn.rollSelections.get(key);}
 function defaults(){return game.settings.get("dawn","rollDefaults");}
+const within=(value,min,max)=>Number.isSafeInteger(value)&&value>=min&&value<=max;
 export class DawnRollComposer extends HandlebarsApplicationMixin(ApplicationV2){
   static DEFAULT_OPTIONS={classes:["dawn","dawn-compact","dawn-composer"],window:{title:"XD6",resizable:false},position:{width:350,height:"auto"},actions:{refreshTargets:DawnRollComposer.onRefreshTargets,kind:DawnRollComposer.onKind,adjust:DawnRollComposer.onAdjust,roll:DawnRollComposer.onRoll,checkPending:DawnRollComposer.onCheckPending,discardPending:DawnRollComposer.onDiscardPending,savePending:DawnRollComposer.onSavePending,republish:DawnRollComposer.onRepublish}};
   static PARTS={body:{template:"systems/dawn/templates/roll-composer.hbs"}};
@@ -77,19 +78,38 @@ export class DawnRollComposer extends HandlebarsApplicationMixin(ApplicationV2){
     return request;
   }
   async _prepareContext(){
-    const s=this.rollState,request=this.request();
-    const pool=s.kind==="quick"?quickPool(request.sources,s.quickAdjustment):poolSize(request.sources).pool;
+    const s=this.rollState,pool=this.previewPool();
     return {...s,finisher:this.finisher,npcManualPool:this.actor.type==='npc',npcPoolMissing:this.actor.type==='npc'&&s.npcPool===null,showTargets:this.rollContext==='combat',targets:this.targets,assassinateAvailable:canAssassinate(this.actor,this.rollContext),assassinateStale:s.assassinate&&!canAssassinate(this.actor,this.rollContext),actorName:display(this.actor).name,sources:this.sources.filter(source=>this.actor.type!=='npc'||source.id!=='npc').map(source=>({...source,name:["body","talent","spirit","mind"].includes(source.id)?label(source.id):source.name,count:s.kind==="quick"?(source.count===0?0:source.count<=2?1:2):source.count})),allowQuick:this.rollContext!=="combat",normal:s.kind==="normal",quick:s.kind==="quick",fixed:s.difficulty==="fixed",tierDifficulty:s.difficulty==="tier",tier:this.actor.system.tier,pool,quickDisadvantage:s.kind==="quick"&&s.disadvantage>0,contextLabel:this.contextLabel,difficultyOptions:{...(this.rollContext!=="combat"?{tier:label("difficultyTier")}:{}),fixed:label("difficultyFixed"),"hits-only":label("hitsOnly")},busy:this.rolling,pending:this.pending,pendingStored:this.pendingStored,pendingShowDice:game.user.isGM||['publicroll','gmroll','selfroll'].includes(this.pending?.rollMode),canRepublish:this.pendingStored&&canRepublishRoll(this.pending,game.user.id,game.users)};
   }
   _onRender(context,options){
     super._onRender(context,options);
-    this.element.querySelectorAll("[data-roll-field]").forEach(el=>el.addEventListener("change",()=>{const key=el.dataset.rollField;const value=el.type==="checkbox"?el.checked:el.type==="number"?(el.value.trim()===''?null:Number(el.value)):el.value;this.rollState[key]=key==='npcPool'&&(!Number.isSafeInteger(value)||value<0||value>200)?null:value;this.render();}));
+    this.element.querySelectorAll('[data-roll-field]').forEach(field=>{
+      const numeric=field.type==='number';
+      field.addEventListener(numeric?'input':'change',()=>{
+        this.rollState[field.dataset.rollField]=numeric?(Number.isFinite(field.valueAsNumber)?field.valueAsNumber:null):field.type==='checkbox'?field.checked:field.value;
+        if(!numeric){this.render();return;}
+        const total=this.element.querySelector('[data-dawn-pool-preview]');
+        if(total)total.textContent=`${this.previewPool()}d6`;
+      });
+    });
+  }
+  previewPool(){
+    try{return this.validatedRequest().pool;}catch{return '— ';}
+  }
+  validatedRequest(){
+    const s=this.rollState;
+    if(this.actor.type==='npc'&&!within(s.npcPool,0,200))throw Error(label('npcPoolRequired'));
+    if(s.kind==='quick'?!within(s.quickAdjustment,-200,200):
+      !within(s.successAt,2,6)||(s.criticalAt!==0&&!within(s.criticalAt,2,6))||(s.difficulty==='fixed'&&!within(s.target,0,200)))throw Error(label('rollInvalidNumbers'));
+    const request=this.request(),pool=s.kind==='quick'?quickPool(request.sources,s.quickAdjustment):poolSize(request.sources).pool;
+    if(!within(pool,0,200))throw Error(label('rollInvalidNumbers'));
+    return {request,pool};
   }
   static onRefreshTargets(){if(this.rolling||this.pending)return;const selection=selectedTargetSet();this.targets=selection.targets;this.targetReferences=selection.references;this.render();}
   static onKind(event,target){if(this.rollContext==="combat"&&target.dataset.kind==="quick")return;this.rollState.kind=target.dataset.kind;this.render();}
   static onAdjust(event,target){const key=target.dataset.field;this.rollState[key]=Math.clamp(this.rollState[key]+Number(target.dataset.delta),key==="quickAdjustment"?-200:0,200);this.render();}
   static async onRoll(){
-    if(this.rolling||this.pending)return;this.rolling=true;await this.render();
+    if(this.rolling||this.pending)return;this.rolling=true;
     let flightId=null;
     try{
       if(!this.actor.isOwner)throw Error(label('noPermission'));
@@ -98,15 +118,15 @@ export class DawnRollComposer extends HandlebarsApplicationMixin(ApplicationV2){
       if(this.npcAction&&!npcActionUnchanged(this.actor,this.npcAction,this.npcActionSnapshot))throw Error(label('npcActionChanged'));
       if(this.technique&&!techniqueRollUnchanged(this.actor,this.technique,this.techniqueLevel,this.techniqueSnapshot))throw Error(label('techniqueRollChanged'));
       if(this.finisher&&(game.combat?.uuid!==this.finisher.combatUuid||actorCombatTension(this.actor,game.combat,game.dawn.party)!==this.finisher.tension||this.actor.system.focus?.value!==this.finisher.available))throw Error(label('finisherChanged'));
-      if(this.actor.type==='npc'&&(!Number.isSafeInteger(this.rollState.npcPool)||this.rollState.npcPool<0||this.rollState.npcPool>200))throw Error(label('npcPoolRequired'));
       if(this.rollState.assassinate&&!canAssassinate(this.actor,this.rollContext))throw Error(label('assassinateUnavailable'));
+      const {request}=this.validatedRequest();
+      await this.render();
       // Probe availability before generating dice; write the full result before publishing.
       const store=globalThis.sessionStorage,key=`dawn.roll-storage-probe.${game.user.id}`;store.setItem(key,'1');store.removeItem(key);
       const remembered=recallPendingRoll(game.world.id,game.user.id,this.actor.uuid);
       if(remembered){this.pending=remembered.draft;this.pendingStored=remembered.stored;this.rolling=false;await this.render();return;}
       const existing=findPendingRoll(store,game.world.id,game.user.id,this.actor.uuid);
       if(existing){this.pending=existing;this.pendingStored=true;this.rolling=false;await this.render();return;}
-      const request=this.request();
       const targetReferences=structuredClone(this.targetReferences),rollId=foundry.utils.randomID(),rollMode=game.settings.get('core','rollMode'),publication=capturePublication(this.actor,rollMode);
       await requireSafeTargets(request.targets,targetReferences);
       if(this.heroAttack||this.npcAction?.system?.mechanics?.kind==='attack'){

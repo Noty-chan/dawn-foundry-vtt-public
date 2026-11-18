@@ -9,6 +9,8 @@ export function validateAttackPreparation({source,target,scene,user,isExecutor,a
   const result=source.getFlag?.('dawn','result'),rollId=source.getFlag?.('dawn','rollId');
   if(!validId(rollId)||result?.status!=='complete'||result?.request?.context!=='combat'||!Number.isSafeInteger(result.hits)||result.hits<0||!Array.isArray(result.dice)||result.dice.some(d=>!Number.isInteger(d.face)||d.face<1||d.face>6))throw Error('attackSourceInvalid');
   if(!scene||target?.parent!==scene||scene.tokens?.get(target.id)!==target||!validId(target.id)||!target.uuid||target.actor?.type!=='hero'||!target.actor.uuid)throw Error('attackTargetInvalid');
+  const recordedTargets=result.request.targets;
+  if(recordedTargets?.length&&recordedTargets.every(t=>t?.tokenUuid)&&!recordedTargets.some(t=>t.tokenUuid===target.uuid))throw Error('attackTargetMismatch');
   if(!Number.isSafeInteger(amount)||amount<0)throw Error('attackAmountInvalid');
   return {sourceUuid:source.uuid,rollId,targetId:target.id,tokenUuid:target.uuid,actorUuid:target.actor.uuid,amount};
 }

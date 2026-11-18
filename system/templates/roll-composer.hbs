@@ -25,6 +25,6 @@
 {{#unless quick}}<label>{{dawnLabel 'difficulty'}}<select data-roll-field="difficulty">{{selectOptions difficultyOptions selected=difficulty}}</select></label>
 {{#if fixed}}<div class="dawn-target"><select data-roll-field="comparison" aria-label="{{dawnLabel 'comparison'}}">{{selectOptions (dawnComparisons) selected=comparison}}</select><input type="number" data-roll-field="target" value="{{target}}" min="0" max="200" aria-label="{{dawnLabel 'targetHits'}}"></div>{{else}}{{#if tierDifficulty}}<p class="dawn-muted">{{dawnLabel 'tier'}} {{tier}}</p>{{/if}}{{/if}}
 {{/unless}}<details class="dawn-roll-advanced"><summary>{{dawnLabel 'rollSettings'}}</summary><label>{{dawnLabel 'successAt'}}<input type="number" data-roll-field="successAt" value="{{successAt}}" min="2" max="6"></label><label>{{dawnLabel 'criticalAt'}}<input type="number" data-roll-field="criticalAt" value="{{criticalAt}}" min="0" max="6"></label><label class="dawn-check"><input type="checkbox" data-roll-field="explode" {{checked explode}}>{{dawnLabel 'explode'}}</label></details>
-<button class="dawn-primary dawn-submit-roll" type="button" data-action="roll" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-dice-d6" aria-hidden="true"></i> {{dawnLabel 'roll'}} · {{pool}}d6</button>
+<button class="dawn-primary dawn-submit-roll" type="button" data-action="roll" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-dice-d6" aria-hidden="true"></i> {{dawnLabel 'roll'}} · <span data-dawn-pool-preview>{{pool}}d6</span></button>
 {{/if}}
 </section>
