@@ -20,12 +20,17 @@ const definitions={
   'negative.ослаблен': ['weakened','downgrade']
 };
 
+/** Effect Listing, LionWing PDF p. 61 (printed p. 60). Older editions share IDs. */
+export function isLionWingEffect(entry){
+  const source=entry?.system?.content?.en?.source;
+  return entry?.type==='effect'&&Object.hasOwn(definitions,entry.system?.canonicalId)&&
+    source?.editionId==='dawn-en-lionwing-cb2f8e67'&&source.locale==='en'&&source.pdfPage===61;
+}
+
 export function tokenStatusConfigs(entries,language){
   return entries.flatMap(entry=>{
-    if(entry.type!=='effect')return [];
-    const canonicalId=entry.system.canonicalId,definition=definitions[canonicalId];
-    if(!definition)return [];
-    const [id,icon]=definition;
+    if(!isLionWingEffect(entry))return [];
+    const canonicalId=entry.system.canonicalId,[id,icon]=definitions[canonicalId];
     return [{
       id:`dawn-${id}`,
       name:entry.system.content[language]?.name??entry.name,

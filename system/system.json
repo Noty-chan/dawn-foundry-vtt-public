@@ -2,10 +2,10 @@
   "id": "dawn",
   "title": "DAWN — LionWing",
   "description": "DAWN for Foundry VTT. Russian and English character, NPC and enemy sheets, XD6 and content library. Development version.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "url": "https://github.com/Noty-chan/dawn-foundry-vtt-public",
   "manifest": "https://github.com/Noty-chan/dawn-foundry-vtt-public/releases/latest/download/system.json",
-  "download": "https://github.com/Noty-chan/dawn-foundry-vtt-public/releases/download/v0.2.1/dawn-0.2.1.zip",
+  "download": "https://github.com/Noty-chan/dawn-foundry-vtt-public/releases/download/v0.2.2/dawn-0.2.2.zip",
   "compatibility": {
     "minimum": "13.351",
     "verified": "13.351",
